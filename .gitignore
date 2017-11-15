@@ -21,6 +21,11 @@ code3/
 # Log file
 *.log
 
+# Config Files
+*.xml
+*.iml
+*.idea
+
 # BlueJ files
 *.ctxt
 *.metadata/
