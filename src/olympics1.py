@@ -140,7 +140,7 @@ def answer_five():
 
 def answer_seven():
     # county level data, not state level
-    df_filter = census_df[census_df['SUMLEV'] == 50].set_index(['STNAME'])  # fliter out state data
+    df_filter = census_df[census_df['SUMLEV'] == 50].set_index(['STNAME'])  # filter out state data
     # print(df_filter)
 
     #state data frame
@@ -153,11 +153,11 @@ def answer_seven():
     state_df.set_index('State', inplace=True)
 
     for st in state_df.index:
-        countiespop = 
+        countiespop = 1
         stcount = df_filter.loc[st].shape[0]
         # print(state_df.loc[st].shape[0]) #, state_df.loc[st].count())
-        state_df['CountyCnt'].loc[st] = stcount
+        state_df['Top3Pop'].loc[st] = stcount
     return "YOUR ANSWER HERE"
 
-#print("fml", answer_six())
-#print(type(answer_six()))
+print("fml", answer_seven())
+#print(type(answer_seve())
