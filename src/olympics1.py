@@ -94,7 +94,7 @@ def answer_four():
     #print(df['Gold.2'].head())
     #print("---- TMP -----")
     #print(tmp.head())
-    return (3*df['Gold.2'])+(2*df['Silver'])+(df['Bronze'])
+    return (3*df['Gold.2'])+(2*df['Silver.2'])+(df['Bronze.2'])
 
 #print(answer_four())
 #print(type(answer_four()))
@@ -126,7 +126,7 @@ def answer_five():
         #print(state_df.loc[st].shape[0]) #, state_df.loc[st].count())
         state_df['CountyCnt'].loc[st] = stcount
 
-    return state_df.nlargest(4,'CountyCnt')
+    return state_df.nlargest(4,'CountyCnt').index[0]
 
 #print("fml", answer_five())
 #print(type(answer_five()))
@@ -134,30 +134,111 @@ def answer_five():
 
 # -----------------------------------------------------
 # Question 6
-# Only looking at the three most populous counties for each state, what are the three most populous states (in order of highest population to lowest population)?
-# Use CENSUS2010POP.
+# Only looking at the three most populous counties for each state, what are the three most populous states
+# (in order of highest population to lowest population)? Use CENSUS2010POP.
 # This function should return a list of string values.
 
-def answer_seven():
+def answer_six():
     # county level data, not state level
     df_filter = census_df[census_df['SUMLEV'] == 50].set_index(['STNAME'])  # filter out state data
     # print(df_filter)
 
     #state data frame
     state_df = pd.DataFrame()
-    #put in unique state names from above
     state_df['State'] = df_filter.index.unique()
-    # print(state_df) # debuge
+    #print(state_df) # debuge
     #will hold sum of top 3 counties per state
     state_df['Top3Pop'] = 0
     state_df.set_index('State', inplace=True)
-
+    countiesPop = 0
+    stSum = 0
     for st in state_df.index:
-        countiespop = 1
-        stcount = df_filter.loc[st].shape[0]
-        # print(state_df.loc[st].shape[0]) #, state_df.loc[st].count())
-        state_df['Top3Pop'].loc[st] = stcount
-    return "YOUR ANSWER HERE"
+        stSum = 0
+        countiesPop = df_filter.loc[st]['CENSUS2010POP']
+        #print(type(countiesPop))
+        if type(countiesPop) != pd.Series:
+            #print(countiesPop)
+            stSum = countiesPop
+        else:
+            #print('Ugh so painful:',type(countiesPop))
+            countiesPop = countiesPop.sort_values(ascending=False)
+            stSum += countiesPop.iloc[0] + countiesPop.iloc[1] + countiesPop.iloc[2]
+            state_df['Top3Pop'].loc[st] = stSum
+            #print(state_df.loc[st]['Top3Pop'])
+            #print(countiesPop.head())
+            #print(countiesPop.sort(lambda x:x[0]))
 
-print("fml", answer_seven())
-#print(type(answer_seve())
+    state_df = state_df.sort_values('Top3Pop',ascending=False)
+    #print(state_df.nlargest(4,'Top3Pop'))
+
+    return state_df.head(3).index.tolist() #state_df.nlargest(3,'Top3Pop').index.tolist()
+
+print(answer_six())
+print(type(answer_six()))
+print(type(answer_six()[0]))
+
+
+# -----------------------------------------------------
+# Question 7
+# Which county has had the largest absolute change in population within the period 2010-2015?
+#  (Hint: population values are stored in columns POPESTIMATE2010 through POPESTIMATE2015, you need to consider all six columns.)
+# e.g. If County Population in the 5 year period is 100, 120, 80, 105, 100, 130, then its largest change in the period would be |130-80| = 50.
+# This function should return a single string value.
+
+def answer_seven():
+    # county level data, not state level
+    df_filter = census_df[census_df['SUMLEV'] == 50].set_index(['CTYNAME'])  # filter out state data
+    columnsToKeep = ['COUNTY','POPESTIMATE2010','POPESTIMATE2011','POPESTIMATE2012','POPESTIMATE2013','POPESTIMATE2014','POPESTIMATE2015']
+    df_filter = df_filter[columnsToKeep]
+    #print(df_filter)
+
+    maxY = df_filter[columnsToKeep].max(axis=1)
+    minY = df_filter[columnsToKeep].min(axis=1)
+    #print('----')
+    #print(df_filter.head())
+    #print('----')
+    #print('max pop years?')
+    #print(maxY.head())
+    #print('----')
+    #print('min pop years?')
+    #print(minY.head())
+
+    df_filter['Diff'] = maxY - minY
+
+    return df_filter.nlargest(1,'Diff').index.tolist()[0]
+
+#print('FML------')
+#print(answer_seven())
+#print(type(answer_seven()))
+#print(type(answer_seven()[0]))
+
+# -----------------------------------------------------
+# Question 8
+# In this datafile, the United States is broken up into four regions using the "REGION" column.
+# Create a query that finds the counties that belong to regions 1 or 2, whose name starts with 'Washington',
+# and whose POPESTIMATE2015 was greater than their POPESTIMATE 2014.
+# This function should return a 5x2 DataFrame with the columns = ['STNAME', 'CTYNAME'] and the same index ID as the census_df
+# (sorted ascending by index).
+
+def answer_eight():
+    # county level data, not state level
+    df_filter = census_df[census_df['SUMLEV'] == 50]# .set_index(['STNAME']) # filter out state data
+    df_filter = df_filter[(df_filter['REGION'] == 1) | (df_filter['REGION'] == 2)]
+    df_filter = df_filter[df_filter.CTYNAME=='Washington County']
+    df_filter = df_filter[df_filter.POPESTIMATE2015 > df_filter.POPESTIMATE2014]
+    columnsToKeep = ['STNAME','CTYNAME']
+    df_filter = df_filter[columnsToKeep].reset_index()
+
+    #print(df_filter)
+    #df_filter = df_filter[df_filter['CTYNAME'].split()[0]=='Fairfield']
+    #print(df_filter[df_filter['CTYNAME']].split()[0]=='Fairfield')
+    #print(df_filter[df_filter.CTYNAME=='Washington County'])
+    #print(df_filter.head())
+
+    return df_filter
+
+
+#print('FML------')
+#print(answer_eight())
+#print(type(answer_eight()))
+#print(type(answer_eight()[0]))

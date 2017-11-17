@@ -21,4 +21,4 @@ df.index.names = ['Locations','Names']
 df = df.append(pd.Series(data={'Cost':3.00, 'Item Purchased':'Kitty Food'}, name=('Store 3','Kevyn')))
 print(df)
 
-df.fillna()
+#df.fillna()
