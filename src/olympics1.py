@@ -1,5 +1,8 @@
 import pandas as pd
 
+# .loc and .iloc work on rows
+# ['name'] directly on dataframes works on columns
+
 df = pd.read_csv('olympics.csv', index_col=0, skiprows=1)
 
 for col in df.columns:
