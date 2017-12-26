@@ -25,6 +25,8 @@ code3/
 *.xml
 *.iml
 *.idea
+*.ipynb
+*.ipynb_checkpoints/
 
 # BlueJ files
 *.ctxt
