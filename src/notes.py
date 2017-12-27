@@ -60,6 +60,58 @@ costs = df['Cost']
 costs += 2
 print('\ncosts before copy/change:\n', df['Cost'], '\n\ncosts series:\n', costs)
 
+# how to use iPython "Magic Methods" inside a console like Spyder
+# shell commands are kernal specific, these don't work on Windows for example
+#print('\n****** shell commands/Magic Methods in a console\n')
+#ipy = get_ipython()
+#print(ipy.magic('ls'))
+#print(ipy.magic('cat olympics.csv'))
+#print(ipy.magic('cat $PATH'))
+
+# read in a CSV file to process it. part of Panda's is file reading/processing methods
+print('\n****** working on a CSV file\n')
+df2 = pd.read_csv('olympics.csv')
+print(df.head())
+
+# index index (row names) set by 'index_col' 0 is first column.
+# column names set by the first row read in, skiprows tells Pandas to use 2nd row for column names 
+df = pd.read_csv('olympics.csv', index_col = 0, skiprows=1)
+print(df.head())
+print(df.columns)
+
+# make the column headers pretty
+# column names are 01
+for col in df.columns:
+    if col[:2]=='01':
+        df.rename(columns={col:'Gold' + col[4:]}, inplace=True)
+        print(col, '::', col[4:])
+    if col[:2]=='02':
+        df.rename(columns={col:'Silver' + col[4:]}, inplace=True)
+    if col[:2]=='03':
+        df.rename(columns={col:'Bronze' + col[4:]}, inplace=True)
+    if col[:1]=='№':
+        df.rename(columns={col:'#' + col[1:]}, inplace=True) 
+
+#print(df.head())
+
+# boolean conditions with DFs, operator is applide to whole DF
+print(df['Gold'] > 0)
+
+# where function takes a boolean function and returns a new DF with the conditions meet
+print('\n****** where and boolean functions examples\n')
+df_only_gold = df.where(df['Gold'] > 0)
+print(df_only_gold.head(), '\n\n')
+print('Countries with only a gold: ', df_only_gold['Gold'].count(), ' Countries with a gold: ', df['Gold'].count())
+
+# where can be overloaded with operator in selector
+df_only_gold = df.where(df['Gold'] > 0)
+print(df_only_gold.head(), '\n\n')
+print('Countries with only a gold: ', df_only_gold['Gold'].count(), ' Countries with a gold: ', df['Gold'].count())
+
+
+
+
+
 
 
 
