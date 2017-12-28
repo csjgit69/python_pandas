@@ -108,6 +108,20 @@ df_only_gold = df.where(df['Gold'] > 0)
 print(df_only_gold.head(), '\n\n')
 print('Countries with only a gold: ', df_only_gold['Gold'].count(), ' Countries with a gold: ', df['Gold'].count())
 
+t_len = len(df[(df['Gold']>0) | (df['Gold.1']>0)])
+print('Lenght of Gold & Gold.1: ', t_len)
+print('Has won a Winter Gold but not Summer: ', df[(df['Gold.1']>0) & (df['Gold']==0)])
+
+# how to change index's and move them around
+# when you make a new index, the old one is distroyed, data lost if not manually saved
+# start with df, and make a new column, and put into it the current index
+df2 = df
+df2['Countries'] = df2.index # create a new column, but the current index into it (Country names)
+df2 = df2.set_index('Gold') # sets the Gold column to the index
+print(df2.head())
+
+
+
 
 
 
