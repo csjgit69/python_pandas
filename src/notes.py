@@ -115,20 +115,78 @@ print('Has won a Winter Gold but not Summer: ', df[(df['Gold.1']>0) & (df['Gold'
 # how to change index's and move them around
 # when you make a new index, the old one is distroyed, data lost if not manually saved
 # start with df, and make a new column, and put into it the current index
+print('\n****** messing with indexes\n')
 df2 = df
 df2['Countries'] = df2.index # create a new column, but the current index into it (Country names)
 df2 = df2.set_index('Gold') # sets the Gold column to the index
 print(df2.head())
+df2 = df2.reset_index() #puts a numbered index in place, current index becomes a column
+print(df2.head())
 
 
+# multi-level indexes and complex data sets
+print('\n***** multi-level indexes and complex data sets\n')
+df = pd.read_csv('census.csv')
+print(df.head())
+print('\n Unique sumlevel entries: ',df['SUMLEV'].unique())
+
+# SUMLEV 40 == county level, 50 == State
+df = df[df['SUMLEV']==50] # update Dataframe to just have state level data
+print(df.head())
+# filter unwanted data (columns) by keeping the ones we want
+columns_to_keep = ['STNAME',
+                   'CTYNAME',
+                   'BIRTHS2010',
+                   'BIRTHS2011',
+                   'BIRTHS2012',
+                   'BIRTHS2013',
+                   'BIRTHS2014',
+                   'BIRTHS2015',
+                   'POPESTIMATE2010',
+                   'POPESTIMATE2011',
+                   'POPESTIMATE2012',
+                   'POPESTIMATE2013',
+                   'POPESTIMATE2014',
+                   'POPESTIMATE2015']
+df = df[columns_to_keep]
+print(df.head())
+df = df.set_index(['STNAME','CTYNAME'])
+print(df.head())
+print(df.loc[ [('Michigan', 'Washtenaw County'),('Michigan','Wayne County')] ])
 
 
+# adding a row to a data frame and giving it indexes
+print('\n***** adding rows, indexes\n')
+purchase_1 = pd.Series({'Name': 'Chris',
+                        'Item Purchased': 'Dog Food',
+                        'Cost': 22.50})
+purchase_2 = pd.Series({'Name': 'Kevyn',
+                        'Item Purchased': 'Kitty Litter',
+                        'Cost': 2.50})
+purchase_3 = pd.Series({'Name': 'Vinod',
+                        'Item Purchased': 'Bird Seed',
+                        'Cost': 5.00})
+
+df = pd.DataFrame([purchase_1, purchase_2, purchase_3], index=['Store 1', 'Store 1', 'Store 2'])
+
+print('\nStart Data Frame:\n',df)
+df = df.set_index([df.index, 'Name'])
+df.index.names = ['Location', 'Name']
+# need to add to a Dataframe with a series, like this:
+df = df.append(pd.Series(data={'Cost': 3.00, 'Item Purchased': 'Kitty Food'}, name=('Store 2', 'Kevyn')))
+print('\nEnd Data Frame:\n',df)
 
 
-
-
-
-
+# missing values examples
+print('\n***** working with missing data\n')
+df = pd.DataFrame()
+df = pd.read_csv('log.csv')
+print(df.head())
+# filling in missing data, fisrt sort the data, so fill functions work
+df = df.set_index(['time','user']) #set the index to time, and then sort the data on the index
+df = df.sort_index()
+print(df.head())
+df.fillna
 
 
 
