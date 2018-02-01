@@ -38,7 +38,7 @@ print(df.loc[:,['Item Purchased']])
 print('\n****** another way to column select, with slicing, and passing a list of columns\n')
 print(df.loc[:,['Item Purchased', 'Cost']])
 
-# drop example, it doesn't change dataframe, returns new copy modified 
+# drop example, it doesn't change dataframe, returns new copy modified
 print('\n****** example of drop not changing dataframe, returns new copy modified\n')
 print('df drop return value\n',df.drop('Store 1'))
 print('\ndf after drop', df)
@@ -71,11 +71,13 @@ print('\ncosts before copy/change:\n', df['Cost'], '\n\ncosts series:\n', costs)
 # read in a CSV file to process it. part of Panda's is file reading/processing methods
 print('\n****** working on a CSV file\n')
 df2 = pd.read_csv('olympics.csv')
+df2 = pd.DataFrame(df2) # let Spyder know this is a Dataframe
 print(df.head())
 
 # index index (row names) set by 'index_col' 0 is first column.
-# column names set by the first row read in, skiprows tells Pandas to use 2nd row for column names 
+# column names set by the first row read in, skiprows tells Pandas to use 2nd row for column names
 df = pd.read_csv('olympics.csv', index_col = 0, skiprows=1)
+df = pd.DataFrame(df) # let Spyder know this is a Dataframe
 print(df.head())
 print(df.columns)
 
@@ -90,9 +92,10 @@ for col in df.columns:
     if col[:2]=='03':
         df.rename(columns={col:'Bronze' + col[4:]}, inplace=True)
     if col[:1]=='№':
-        df.rename(columns={col:'#' + col[1:]}, inplace=True) 
+        df.rename(columns={col:'#' + col[1:]}, inplace=True)
 
 #print(df.head())
+
 
 # boolean conditions with DFs, operator is applide to whole DF
 print(df['Gold'] > 0)
@@ -127,6 +130,7 @@ print(df2.head())
 # multi-level indexes and complex data sets
 print('\n***** multi-level indexes and complex data sets\n')
 df = pd.read_csv('census.csv')
+df = pd.DataFrame(df) # let Spyder know this is a Dataframe
 print(df.head())
 print('\n Unique sumlevel entries: ',df['SUMLEV'].unique())
 
@@ -179,8 +183,8 @@ print('\nEnd Data Frame:\n',df)
 
 # missing values examples
 print('\n***** working with missing data\n')
-df = pd.DataFrame()
 df = pd.read_csv('log.csv')
+df = pd.DataFrame(df) # let Spyder know this is a Dataframe
 print(df.head())
 # filling in missing data, fisrt sort the data, so fill functions work
 df = df.set_index(['time','user']) #set the index to time, and then sort the data on the index
